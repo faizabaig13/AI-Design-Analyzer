@@ -6,4 +6,4 @@
 /build/
 
 # Environment variables
-.env.local
+config.bat

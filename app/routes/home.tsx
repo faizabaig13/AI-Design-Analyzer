@@ -1,9 +1,8 @@
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import DesignCard from "~/components/DesignCard";
-import {usePuterStore} from "~/lib/puter";
-import {Link, useNavigate} from "react-router";
-import {useEffect, useState} from "react";
+import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,40 +12,39 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { auth, kv } = usePuterStore();
   const navigate = useNavigate();
   const [designs, setDesigns] = useState<Design[]>([]);
   const [loadingDesigns, setLoadingDesigns] = useState(false);
 
   useEffect(() => {
-    if(!auth.isAuthenticated) navigate('/auth?next=/');
-  }, [auth.isAuthenticated])
-
-  useEffect(() => {
+    // Load saved designs (stub logic, since Puter is removed)
     const loadDesigns = async () => {
       setLoadingDesigns(true);
 
-      const designs = (await kv.list('design:*', true)) as KVItem[];
+      // Example: load mock or localStorage data instead of kv.list
+      const saved = localStorage.getItem("designs");
+      const parsedDesigns = saved ? (JSON.parse(saved) as Design[]) : [];
 
-      const parsedDesigns = designs?.map((design) => (
-          JSON.parse(design.value) as Design
-      ))
-
-      setDesigns(parsedDesigns || []);
+      setDesigns(parsedDesigns);
       setLoadingDesigns(false);
-    }
+    };
 
-    loadDesigns()
+    loadDesigns();
   }, []);
 
-  return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
-    <Navbar />
+  return (
+    <main className="bg-[url('/images/bg-main.svg')] bg-cover">
+      <Navbar />
 
-    <section className="main-section">
-      <div className="page-heading py-16">
-        <h1>Track Your Design Evaluations</h1>
-        <h2>Review your design submissions and check AI-powered UX feedback.</h2>
-</div>
-    </section>
-  </main>
+      <section className="main-section">
+        <div className="page-heading py-16">
+          <h1 className="text-6xl">Track Your Design Evaluations</h1>
+          <h2 className="text-3xl">
+            Review your design submissions and check AI-powered UX feedback.
+          </h2>
+        </div>
+
+      </section>
+    </main>
+  );
 }
